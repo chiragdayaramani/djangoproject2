@@ -4,11 +4,12 @@
 
 {% block 'body' %}
 <form class="container" action="" method="post">
-    <h2 class="text-center">Create a Post</h2>
+    <h2 class="text-center">Create Category</h2>
     <hr>
     {% csrf_token %}
     {{form|crispy}}
     <div class="text-center">
+
         <button class="btn btn-primary" type="submit">Submit</button>
     </div>
 </form>
