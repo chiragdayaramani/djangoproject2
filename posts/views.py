@@ -12,7 +12,7 @@ def post(request, slug):
 def index(request):
     post = Post.objects.all()
     print(post)
-    return HttpResponse("Done")
+    return render(request,'index.html')
 
 
 def create(request):
