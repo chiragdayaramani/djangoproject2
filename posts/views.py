@@ -1,4 +1,6 @@
 from posts.forms import PostForm,CategoryForm
+from django.contrib.auth.decorators import login_required
+
 from django.shortcuts import get_object_or_404, redirect, render, HttpResponse
 from .models import Category, Post
 # Create your views here.
@@ -19,24 +21,26 @@ def index(request):
     print(post)
     return render(request,'index.html')
 
-
+@login_required
 def create(request):
 
     if request.method == 'POST':
 
         form = PostForm(request.POST)
-        form.instance.author=request.user
-        post = form.save()
-        return redirect("post",slug=post.slug)
+        if form.is_valid():
+            form.instance.author=request.user
+            post = form.save()
+            return redirect("post",slug=post.slug)
         # return HttpResponse(post.title)
     else:
         form = PostForm()
-        context = {
-            'form': form,
-        }
-        return render(request, 'create.html', context)
 
+    context = {
+        'form': form,
+    }
+    return render(request, 'create.html', context)
 
+@login_required
 def createcategory(request):
 
     if request.method == 'POST':
@@ -49,3 +53,37 @@ def createcategory(request):
             'form': form,
         }
         return render(request, 'createcategory.html', context)
+
+@login_required
+def update(request,slug):
+    post=get_object_or_404(Post,slug=slug)
+
+    if request.method == 'POST':
+
+        form = PostForm(request.POST,instance=post)
+        if form.is_valid():
+            # form.instance.author=request.user
+            post = form.save()
+            return redirect('post',slug=post.slug)
+        
+    else:
+        form = PostForm(instance=post)
+
+    context = {
+        'form': form,
+    }
+    return render(request, 'create.html', context)
+
+@login_required
+def my_posts(request):
+
+    posts=Post.objects.filter(author=request.user)
+    context={
+        'posts':posts
+    }
+
+    return render(request,'posts.html',context)
+
+
+
+    
