@@ -9,5 +9,6 @@ urlpatterns=[
     path('create/',post_views.create,name='create'),
     path('createcategory/',post_views.createcategory,name='createcategory'),
     path('<str:slug>/update/',post_views.update,name='update'),
+    path('delete/',post_views.delete,name='delete'),
     path('<str:slug>/',post_views.post,name='post'),
 ]
