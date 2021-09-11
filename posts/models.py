@@ -1,4 +1,4 @@
-from posts.managers import PostManager
+from posts.managers import CategoryManager, PostManager
 from django.db import models
 from django.utils.text import slugify
 from django.contrib.auth.models import User
@@ -11,6 +11,8 @@ class Category(models.Model):
     created_at=models.DateTimeField(auto_now_add=True)
     updated_at=models.DateTimeField(auto_now=True)
     deleted_at=models.DateTimeField(null=True,blank=True)
+
+    objects=CategoryManager()
 
     def save(self,*args,**kwargs):
         value=slugify(self.name)

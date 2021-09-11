@@ -91,6 +91,15 @@ def my_posts(request):
 
     return render(request,'posts.html',context)
 
+@login_required
+def listcategories(request):
+
+    categories=Category.objects.all()
+    context={
+        'categories':categories
+    }
+    return render(request,'listcategories.html',context)
+
 
 @login_required
 def delete(request):
