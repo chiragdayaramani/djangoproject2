@@ -6,6 +6,7 @@ from . import views as post_views
 urlpatterns=[
     path('',post_views.index,name='posts'),
     path('my_posts/',post_views.my_posts,name='my_posts'),
+    path('category_posts/<str:slug>/',post_views.category_posts,name='category_posts'),
     path('listcategories/',post_views.listcategories,name='listcategories'),
     path('create/',post_views.create,name='create'),
     path('createcategory/',post_views.createcategory,name='createcategory'),

@@ -1,3 +1,4 @@
+from django.utils.text import slugify
 from posts.forms import PostForm,CategoryForm
 from django.contrib.auth.decorators import login_required
 
@@ -100,6 +101,18 @@ def listcategories(request):
     }
     return render(request,'listcategories.html',context)
 
+@login_required
+def category_posts(request,slug):
+    category=get_object_or_404(Category,slug=slug)
+    # print(category)
+    category_id=category.id
+    posts=Post.objects.filter(category_id=category_id)
+    context={
+        'posts':posts,
+        'cat':slugify(category.name)
+    }
+
+    return render(request,'posts.html',context)
 
 @login_required
 def delete(request):
