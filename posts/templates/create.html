@@ -3,14 +3,27 @@
 {% load crispy_forms_tags %}
 
 {% block 'body' %}
-<form class="container" action="" method="post">
-    <h2 class="text-center">Create a Post</h2>
-    <hr>
-    {% csrf_token %}
-    {{form|crispy}}
-    <div class="text-center">
-        <button class="btn btn-primary" type="submit">Submit</button>
+<div class="row">
+    <div class="col-md-8">
+        <form class="container" action="" method="post" enctype="multipart/form-data">
+            <h2 class="text-center">Create a Post</h2>
+            <hr>
+            {% csrf_token %}
+            {{form|crispy}}
+            <div class="text-center">
+                <button class="btn btn-primary" type="submit">Submit</button>
+            </div>
+        </form>
     </div>
-</form>
+    <div class="col-md-3">
+        <img id="img-preview" src="{{ form.instance.cover_pic.url }}" height="400px" alt="">
+    </div>
+</div>
+
 
 {% endblock 'body' %}
+
+
+{% block 'javascript' %}
+    <script src="{% static 'js/create.js' %}"></script>
+{% endblock 'javascript' %}
