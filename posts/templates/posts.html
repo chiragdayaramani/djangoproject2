@@ -21,7 +21,7 @@
               </div>
               <div>
                 <a href="{% url 'post' post.slug %}"><h4>{{post.title|title}}</h4></a>
-                <p><a href="#"><b>{{post.category}} </b></a><span class="text-muted">{{ post.updated_at}}</span></p>
+                <p><a href="{% url 'category_posts' post.category %}"><b>{{post.category}} </b></a><span class="text-muted">{{ post.updated_at}}</span></p>
                 {% if post.content|wordcount > 70 %}
                     <p>{{post.content|truncatewords:50}}</p>
                     <a href="{% url 'post' post.slug %}" class="text-muted">Read more</a>
