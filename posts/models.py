@@ -5,6 +5,7 @@ from django.utils.text import slugify
 from django.contrib.auth.models import User
 import os
 from django.conf import settings
+from PIL import Image
 
 # Create your models here.
 class Category(models.Model):
@@ -58,6 +59,12 @@ class Post(models.Model):
         value = slugify(self.title)
         self.slug = value
         super().save(*args,**kwargs)
+
+        cover_pic=Image.open(self.cover_pic.path)
+        if cover_pic.height>500 or cover_pic.width>500:
+            output_size=(500,500)
+            cover_pic.thumbnail(output_size)
+            cover_pic.save(self.cover_pic.path)
 
   
 
