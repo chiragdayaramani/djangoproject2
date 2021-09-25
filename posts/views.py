@@ -6,8 +6,10 @@ from django.shortcuts import get_object_or_404, redirect, render, HttpResponse
 from .models import Category, Post
 
 from django.core.exceptions import *
-
+from django.core.paginator import Paginator
 import datetime
+
+from django.db.models import Q
 # Create your views here.
 
 
@@ -93,8 +95,28 @@ def update(request,slug):
 def my_posts(request):
 
     posts=Post.query.filter(author=request.user)
+    paginator=Paginator(posts,2)
+    is_paginated=paginator.num_pages>1
+    page=request.GET.get("page",1)
+    if int(page) > paginator.num_pages:
+        page=1
+    page_obj=paginator.page(page)
+
     context={
-        'posts':posts
+        'is_paginated':is_paginated,
+        'page_obj':page_obj,  
+    }
+
+    return render(request,'posts.html',context)
+
+@login_required
+def search(request):
+    search=request.GET.get("search","")
+    posts=Post.query.filter(Q(title__icontains=search) | Q(content__icontains=search))
+
+    context={
+        'is_paginated':False,
+        'page_obj':posts,  
     }
 
     return render(request,'posts.html',context)

@@ -15,5 +15,7 @@ urlpatterns=[
     path('createcategory/',post_views.createcategory,name='createcategory'),
     path('<str:slug>/update/',post_views.update,name='update'),
     path('delete/',post_views.delete,name='delete'),
+    path('search/',post_views.search,name='search'),
+
     path('<str:slug>/',post_views.post,name='post'),
 ]
