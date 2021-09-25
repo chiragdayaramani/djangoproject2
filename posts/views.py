@@ -111,15 +111,22 @@ def my_posts(request):
 
 @login_required
 def search(request):
-    search=request.GET.get("search","")
-    posts=Post.query.filter(Q(title__icontains=search) | Q(content__icontains=search))
 
-    context={
-        'is_paginated':False,
-        'page_obj':posts,  
+    search = request.GET.get("search", "")
+    posts = Post.query.filter(Q(title__icontains=search) | Q(content__icontains=search))
+    paginator = Paginator(posts, 2)
+    is_paginated = paginator.num_pages > 1
+    page = request.GET.get("page", 1)
+    if int(page) > paginator.num_pages:
+        page = 1
+    page_obj = paginator.page(page)
+    context = {
+        'search':search,
+        'is_paginated': is_paginated,
+        'page_obj':page_obj,
     }
-
-    return render(request,'posts.html',context)
+    return render(request, "posts.html", context)
+    
 
 @login_required
 def listcategories(request):
