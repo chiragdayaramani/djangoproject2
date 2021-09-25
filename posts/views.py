@@ -15,6 +15,7 @@ def post(request, slug):
     # post = Post.query.filter(slug=slug).first()
     # return HttpResponse(f"<h1> {post.title} </h1> <br> <p> {post.content}</p>")
     post=get_object_or_404(Post,slug=slug)
+    post.increment_views()
     context={
         'post':post
     }
