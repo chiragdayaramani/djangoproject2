@@ -22,9 +22,15 @@ def post(request, slug):
 
 
 def index(request):
-    post = Post.query.all()
-    print(post)
-    return render(request,'index.html')
+    latest_posts=Post.query.all().order_by("-created_at")[:6]
+    trending_posts=Post.query.all().order_by("-views")[:3]
+
+    context={
+        'latest_posts':latest_posts,
+        'trending_posts':trending_posts
+    }
+
+    return render(request,'index.html',context)
 
 @login_required
 def create(request):
