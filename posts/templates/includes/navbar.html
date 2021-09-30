@@ -1,19 +1,53 @@
   <!-- NAVBAR -->
+  {% load helper_tags %}
   <div class="pb-3 pt-3 border-bottom">
     <div class="container">
       <nav class="nav navbar-expand-sm navbar-light justify-content-between">
         <ul class="navbar-nav">
-          <li class="nav-item">
-            <a class="nav-link active" href="{% url 'posts' %}">Dashboard</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'my_posts' %}">My Posts</a>
-          </li>
-      
-          <!-- Dropdown -->
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'listcategories' %}">Categories</a>
-          </li>
+          {% if tab == 'dashboard' %}
+            <li class="nav-item">
+              <a class="nav-link active" href="{% url 'posts' %}">Dashboard</a>
+            </li>
+            {% else %}
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'posts' %}">Dashboard</a>
+            </li>
+            {% endif %}
+          {% if user.is_authenticated %}
+            {% if tab == 'my_posts' %}
+              <li class="nav-item">
+                <a class="nav-link active" href="{% url 'my_posts' %}">My Posts</a>
+              </li>
+            {% else %}
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'my_posts' %}">My Posts</a>
+              </li>
+            {% endif %}
+          {% endif %}
+            {% if tab == 'categories' %}
+              <li class="nav-item">
+                <a class="nav-link active" href="{% url 'listcategories' %}">Categories</a>
+              </li>
+            {% else %}
+              <li class="nav-item">
+                <a class="nav-link " href="{% url 'listcategories' %}">Categories</a>
+              </li>
+            {% endif %}
+          {% if user.is_authenticated %}
+              <li class="nav-item">
+                <a class="nav-link {{ tab|active:'create' }}" href="{% url 'create' %}">Create Post</a>
+              </li>
+          {% endif %}
+          {% if user.is_authenticated %}
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+            </li>
+          {% else %}
+            <li class="nav-item">
+              <a class="nav-link active" href="{% url 'login' %}">Login</a>
+            </li>
+          {% endif %}
+
         </ul>
         <div class="d-flex align-items-center">
           <a class="navbar-brand" href="{% url 'posts' %}">Blog Project</a>

@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
-
+{% load crispy_forms_tags %}
 
 {% block 'body' %}
 
@@ -44,5 +44,9 @@
         </div>
     </div>
 </div>
-
+{% if user.is_authenticated %}
+<div class="text-center">
+    <a class="btn btn-primary" href="{% url 'createcategory' %}">Create Category</a>
+</div>
+{% endif %}
     {% endblock 'body' %}

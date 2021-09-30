@@ -10,6 +10,7 @@ from django.core.paginator import Paginator
 import datetime
 
 from django.db.models import Q
+from django.contrib import messages
 # Create your views here.
 
 
@@ -30,7 +31,8 @@ def index(request):
 
     context={
         'latest_posts':latest_posts,
-        'trending_posts':trending_posts
+        'trending_posts':trending_posts,
+        'tab':'dashboard',
     }
 
     return render(request,'index.html',context)
@@ -44,29 +46,33 @@ def create(request):
         if form.is_valid():
             form.instance.author=request.user
             post = form.save()
+            messages.success(request,f"{post.title} post created successfully")
             return redirect("post",slug=post.slug)
         # return HttpResponse(post.title)
+        messages.error(request,f"Error while creating post")
     else:
         form = PostForm()
 
     context = {
         'form': form,
+        'tab':'create',
     }
     return render(request, 'create.html', context)
 
 @login_required
 def createcategory(request):
-
+    form = CategoryForm(request.POST)
     if request.method == 'POST':
-        form = CategoryForm(request.POST)
-        post = form.save()
-        return HttpResponse(post.name)
+        form.instance.author=request.user
+        form.save()
+        
+        return redirect("listcategories")
     else:
         form = CategoryForm()
-        context = {
-            'form': form,
-        }
-        return render(request, 'createcategory.html', context)
+    context = {
+        'form': form,
+    }
+    return render(request, 'createcategory.html', context)
 
 @login_required
 def update(request,slug):
@@ -81,8 +87,9 @@ def update(request,slug):
         if form.is_valid():
             # form.instance.author=request.user
             post = form.save()
+            messages.success(request,f"{post.title} post updated successfully")
             return redirect('post',slug=post.slug)
-        
+        messages.error(request,f"Error while updating post")
     else:
         form = PostForm(instance=post)
 
@@ -105,15 +112,18 @@ def my_posts(request):
     context={
         'is_paginated':is_paginated,
         'page_obj':page_obj,  
+        'tab':'my_posts',
     }
 
     return render(request,'posts.html',context)
 
-@login_required
+
 def search(request):
 
     search = request.GET.get("search", "")
     posts = Post.query.filter(Q(title__icontains=search) | Q(content__icontains=search))
+    if not posts:
+        messages.info(request,f"No posts found for {search}")
     paginator = Paginator(posts, 2)
     is_paginated = paginator.num_pages > 1
     page = request.GET.get("page", 1)
@@ -128,23 +138,27 @@ def search(request):
     return render(request, "posts.html", context)
     
 
-@login_required
+
 def listcategories(request):
 
     categories=Category.objects.all()
+    print(categories)
     context={
-        'categories':categories
+        'categories':categories,
+        'tab':'categories',
     }
     return render(request,'listcategories.html',context)
 
-@login_required
+
 def category_posts(request,slug):
     category=get_object_or_404(Category,slug=slug)
-    # print(category)
+    print(category)
     category_id=category.id
     posts=Post.objects.filter(category_id=category_id)
+    print(posts)
     context={
         'posts':posts,
+        'page_obj':posts,
         'cat':slugify(category.name)
     }
 
@@ -160,6 +174,7 @@ def delete(request):
 
         post.deleted_at=datetime.datetime.now()
         post.save()
+        messages.success(request,f"{post.title} moved to trash")
         return redirect("my_posts")
 
     else:
@@ -189,6 +204,7 @@ def restore(request,slug):
         
         post.deleted_at=None
         post.save()
+        messages.success(request,f"{post.title} restore successfully")
         return redirect('my_posts')
     else:
         raise BadRequest()
@@ -200,6 +216,7 @@ def permanent_delete(request):
         if request.user!=post.author:
             raise PermissionDenied()
         post.delete()
+        messages.success(request,f"{post.title} deleted permanently")
         return redirect('my_posts')
     else:
         raise BadRequest()

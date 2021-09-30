@@ -3,7 +3,7 @@
 {% load crispy_forms_tags %}
 
 {% block 'body' %}
-<form class="container" action="" method="post">
+<form class="container" action="{% url 'createcategory' %}" method="post">
     <h2 class="text-center">Create Category</h2>
     <hr>
     {% csrf_token %}
